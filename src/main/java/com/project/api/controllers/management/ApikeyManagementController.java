@@ -3,7 +3,7 @@ package com.project.api.controllers.management;
 import com.project.api.constants.AppUrls;
 import com.project.api.controllers.management.base.BaseManagementController;
 import com.project.api.entities.ApiKey;
-import com.project.api.mappers.ApiKeyMapper;
+import com.project.api.mappers.ApiKeyManagementMapper;
 import com.project.api.requests.management.apikey.CreateApiKeyManagementRequest;
 import com.project.api.requests.management.apikey.PatchApiKeyManagementRequest;
 import com.project.api.requests.management.apikey.UpdateApiKeyManagementRequest;
@@ -32,5 +32,5 @@ public class ApikeyManagementController
   public static final String BASE_URL = AppUrls.MANAGEMENT_API + "/api-keys";
 
   private final ApiKeyService service;
-  private final ApiKeyMapper mapper;
+  private final ApiKeyManagementMapper mapper;
 }

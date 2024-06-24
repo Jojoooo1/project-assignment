@@ -216,7 +216,7 @@ The database consists of 3 tables (including 1 for migration):
 
 #### Business choices
 
-- List the business choice your made.
+- List the business choice you've made.
 
 ### Indexes
 
@@ -344,7 +344,7 @@ public class CompanyManagementController
 }
 
 /**
- * The type Base management controller.
+ * The class Base management controller.
  *
  * @param <E> the type parameter Entity
  * @param <I> the type parameter ID
@@ -356,8 +356,32 @@ public class CompanyManagementController
 @Slf4j
 public abstract class BaseManagementController<
     E extends BaseEntity<I>, I extends Serializable, C, U, P, R> {
-  public abstract ManagementBaseMapper<E, C, U, P, R> getMapper();
+  public abstract BaseManagementMapper<E, C, U, P, R> getMapper();
   public abstract BaseService<E, I> getService();
+}
+
+/**
+ * The interface Base mapper management.
+ *
+ * @param <E> the type parameter Entity
+ * @param <C> the type parameter CreateRequest
+ * @param <U> the type parameter UpdateRequest
+ * @param <P> the type parameter PatchRequest
+ * @param <R> the type parameter Response
+ */
+public interface BaseManagementMapper<E, C, U, P, R> {
+
+  @ToEntity
+  E toEntity(C request);
+
+  @ToEntity
+  E updateWithManagementRequest(U request, @MappingTarget E entity);
+
+  @ToEntity
+  @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+  E patchWithManagementRequest(P request, @MappingTarget E entity);
+
+  R toManagementResponse(E entity);
 }
 ```
 

@@ -14,7 +14,7 @@ import org.mapstruct.factory.Mappers;
 
 class ApiKeyMapperTest {
 
-  private final ApiKeyMapper mapper = Mappers.getMapper(ApiKeyMapper.class);
+  private final ApiKeyManagementMapper mapper = Mappers.getMapper(ApiKeyManagementMapper.class);
 
   @Test
   void mapper_verifyCreateManagementRequest() {

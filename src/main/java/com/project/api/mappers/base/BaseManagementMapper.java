@@ -14,7 +14,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
  * @param <P> the type parameter PatchRequest
  * @param <R> the type parameter Response
  */
-public interface ManagementBaseMapper<E, C, U, P, R> {
+public interface BaseManagementMapper<E, C, U, P, R> {
 
   @ToEntity
   E toEntity(C request);

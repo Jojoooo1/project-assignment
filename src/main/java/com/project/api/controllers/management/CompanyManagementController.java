@@ -3,7 +3,7 @@ package com.project.api.controllers.management;
 import com.project.api.constants.AppUrls;
 import com.project.api.controllers.management.base.BaseManagementController;
 import com.project.api.entities.Company;
-import com.project.api.mappers.CompanyMapper;
+import com.project.api.mappers.CompanyManagementMapper;
 import com.project.api.requests.management.company.CreateCompanyManagementRequest;
 import com.project.api.requests.management.company.PatchCompanyManagementRequest;
 import com.project.api.requests.management.company.UpdateCompanyManagementRequest;
@@ -32,5 +32,5 @@ public class CompanyManagementController
   public static final String BASE_URL = AppUrls.MANAGEMENT_API + "/companies";
 
   private final CompanyService service;
-  private final CompanyMapper mapper;
+  private final CompanyManagementMapper mapper;
 }

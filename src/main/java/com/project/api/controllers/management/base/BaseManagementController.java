@@ -1,7 +1,7 @@
 package com.project.api.controllers.management.base;
 
 import com.project.api.entities.base.BaseEntity;
-import com.project.api.mappers.base.ManagementBaseMapper;
+import com.project.api.mappers.base.BaseManagementMapper;
 import com.project.api.responses.shared.ApiListPaginationSuccess;
 import com.project.api.services.base.BaseService;
 import jakarta.persistence.Table;
@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public abstract class BaseManagementController<
     E extends BaseEntity<I>, I extends Serializable, C, U, P, R> {
 
-  public abstract ManagementBaseMapper<E, C, U, P, R> getMapper();
+  public abstract BaseManagementMapper<E, C, U, P, R> getMapper();
 
   public abstract BaseService<E, I> getService();
 
