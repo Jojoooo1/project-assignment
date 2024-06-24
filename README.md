@@ -1079,7 +1079,7 @@ Ensure high availability with:
 - Set autovacuum thresholds to 5000/10000 for highly updatable tables to optimize vacuum operation
   and table performance. For example:
   ```sql
-  ALTER TABLE stop SET (
+  ALTER TABLE company SET (
     autovacuum_vacuum_scale_factor = 0.0,
     autovacuum_vacuum_threshold = 5000,
     autovacuum_analyze_scale_factor = 0.0,
