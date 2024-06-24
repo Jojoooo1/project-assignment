@@ -216,7 +216,8 @@ The database consists of 3 tables (including 1 for migration):
 
 #### Business choices
 
-- List the business choice you've made.
+- This is specific to your home assignment project, add some context or remove it. 
+  I personally put all the business/product choice I have made.
 
 ### Indexes
 
@@ -389,11 +390,12 @@ public interface BaseManagementMapper<E, C, U, P, R> {
 
 #### Validation
 
-- List some specific validations you have made.
+- This is specific to your home assignment project, add some context or remove it. I personally put the request validations and why.
 
 #### Implementation
 
-- List some specific implementations you have made.
+- This is specific to your home assignment project, add some context or remove it. 
+  I personally put the specific implementation that was asked in the project.
 
 ## Authentication and Authorization
 
