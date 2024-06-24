@@ -1,7 +1,7 @@
 client:
   slack:
     api-alert:
-      webhook: https://hooks.slack.com/services/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
+      webhook: https://hooks.slack.com/services/xxxxx/xxxxxx/xxxxxxxx
       name: api-alert
 
 redis:
