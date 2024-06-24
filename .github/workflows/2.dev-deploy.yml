@@ -1,0 +1,77 @@
+name: "deploy to dev"
+
+# Note: Execute when feature branch is merge into develop this CI will be executed.
+
+on:
+  pull_request:
+    types: [ closed ]
+    branches: [ develop ]
+
+env:
+  IMAGE_NAME: api
+
+concurrency:
+  group: ci-deploy-dev-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  dev-deploy:
+    runs-on: ubuntu-latest
+    environment: dev
+    permissions: # Necessary for GCP workload identity provider
+      contents: 'read'
+      id-token: 'write'
+    
+    if: github.event.pull_request.merged == true
+    steps:
+      # 1. Setup
+      - uses: actions/checkout@v4
+      - name: Set up JDK
+        uses: actions/setup-java@v4.2.1
+        with:
+          distribution: 'liberica'
+          java-version: '21'
+          cache: 'maven'
+      
+      # 2. Sets & print variables
+      - name: Sets variables
+        id: variables
+        run: |
+          # 1. Set vars
+          IMAGE_REGISTRY="us-docker.pkg.dev/${{ secrets.PROJECT_ID }}/cloud-diplomats/${{ env.IMAGE_NAME }}"
+          IMAGE_TAG="dev-${{ github.run_number }}"
+          
+          # 3. Set vars as env
+          echo "IMAGE_REGISTRY=$IMAGE_REGISTRY" >> $GITHUB_ENV
+          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+      
+      - name: Print variables
+        run: |
+          echo "IMAGE_TAG=$IMAGE_TAG"
+          echo "IMAGE_REGISTRY=$IMAGE_REGISTRY"
+
+#      # 3. Auth
+#      - name: Auth via Workload Identity Federation
+#        id: auth
+#        uses: google-github-actions/auth@v2.1.2
+#        with:
+#          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+#          service_account: ${{ secrets.SERVICE_ACCOUNT }} # impersonated SA
+#
+#      # 4. Setup gcloud & configure docker to use gcloud
+#      - name: Setup gcloud
+#        uses: google-github-actions/setup-gcloud@v2.1.0
+#        with:
+#          project_id: ${{ secrets.PROJECT_ID }}
+#      - name: Setup docker to authenticate via gcloud
+#        run: gcloud --quiet auth configure-docker us-docker.pkg.dev
+#
+#      # 5. Build image
+#      - name: Build image
+#        run: mvn clean package -DskipTests spring-boot:build-image --no-transfer-progress -Dspring-boot.build-image.imageName=$IMAGE_REGISTRY:$IMAGE_TAG
+#
+#      # 6. Push image
+#      - name: Push image
+#        run: docker push $IMAGE_REGISTRY:$IMAGE_TAG
+#
+#      # 7. Notify if fails

@@ -1,0 +1,8 @@
+client:
+  slack:
+    api-alert:
+      webhook: https://test.com
+      name: test
+redis:
+  host: 127.0.0.1 # do not use localhost or gh will fails.
+  password: password

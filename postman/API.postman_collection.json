@@ -1,0 +1,613 @@
+{
+	"info": {
+		"_postman_id": "d961bdd7-9514-4524-af39-9642c5b4773d",
+		"name": "API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "8038963",
+		"_collection_link": "https://warped-shadow-361315.postman.co/workspace/API~a6ee75c6-7213-4b54-83f1-27c661a9a973/collection/8038963-d961bdd7-9514-4524-af39-9642c5b4773d?action=share&source=collection_link&creator=8038963"
+	},
+	"item": [
+		{
+			"name": "actuator",
+			"item": [
+				{
+					"name": "actuator",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/actuator",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"actuator"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "sbom (vulnerability scanning)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/actuator/sbom/application",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"actuator",
+								"sbom",
+								"application"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "customer",
+			"item": [
+				{
+					"name": "hello world",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/api",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"api"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "apikey",
+				"apikey": [
+					{
+						"key": "value",
+						"value": "{{customer_api_key}}",
+						"type": "string"
+					},
+					{
+						"key": "key",
+						"value": "X-Api-Key",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "management",
+			"item": [
+				{
+					"name": "companies",
+					"item": [
+						{
+							"name": "get by id",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/management/companies/{{company_id}}",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"management",
+										"companies",
+										"{{company_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get all",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/management/companies",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"management",
+										"companies"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"let req = {",
+											"    \"slug\": pm.random(),",
+											"    \"name\": pm.random(),",
+											"    \"officialName\": pm.random(),",
+											"    \"federalTaxId\": pm.randomInteger(14),",
+											"    \"stateTaxId\": pm.randomInteger(14),",
+											"    \"phone\": pm.randomInteger(10),",
+											"    \"email\": \"company@gmail.com\",",
+											"",
+											"    \"addressStreet\": \"rua test\",",
+											"    \"addressStreetNumber\": \"11\",",
+											"    \"addressComplement\": \"test\",",
+											"    \"addressCityDistrict\": \"Pinheiros\",",
+											"    \"addressPostCode\": \"05415090\",",
+											"    \"addressCity\": \"Sao paulo\",",
+											"    \"addressStateCode\": \"SP\",",
+											"    \"addressCountry\": \"addressCountry\",",
+											"",
+											"    \"isManagement\": true,",
+											"",
+											"    \"addressLatitude\": 50,",
+											"    \"addressLongitude\": 10",
+											"};",
+											"",
+											"pm.variables.set('body', JSON.stringify(req));"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = JSON.parse(responseBody);",
+											"postman.setEnvironmentVariable(\"company_id\", jsonData.id);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{{body}}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/management/companies",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"management",
+										"companies"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"my new company\",\n    \"stateTaxId\": \"12\",\n    \"phone\": \"1235412458\",\n    \"addressLatitude\": 0,\n    \"addressLongitude\": 0,\n    \"isManagement\": true,\n    \"isCustomer\": false,\n    \"isInternal\": false\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/management/companies/{{company_id}}",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"management",
+										"companies",
+										"{{company_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "patch",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"ups-new\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/management/companies/{{company_id}}",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"management",
+										"companies",
+										"{{company_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/management/companies/{{company_id}}",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"management",
+										"companies",
+										"{{company_id}}"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "api-keys",
+					"item": [
+						{
+							"name": "get by id",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/management/api-keys/{{apikey_id}}",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"management",
+										"api-keys",
+										"{{apikey_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get all",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/management/api-keys",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"management",
+										"api-keys"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = JSON.parse(responseBody);",
+											"postman.setEnvironmentVariable(\"apikey_id\", jsonData.id);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"companyId\": 1,\n    \"name\": \"apikey test\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/management/api-keys",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"management",
+										"api-keys"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "inactive",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/management/api-keys/{{apikey_id}}",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"management",
+										"api-keys",
+										"{{apikey_id}}"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				}
+			],
+			"auth": {
+				"type": "apikey",
+				"apikey": [
+					{
+						"key": "value",
+						"value": "{{management_api_key}}",
+						"type": "string"
+					},
+					{
+						"key": "key",
+						"value": "X-Api-Key",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "internal",
+			"item": [
+				{
+					"name": "hello world",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/internal",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"internal"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "public",
+			"item": [
+				{
+					"name": "hello world",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/public",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"public"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"Object.prototype.random = () => {",
+					"    return Math.random().toString(36).substr(2, 7);",
+					"}",
+					"",
+					"Object.prototype.randomInteger = (length = 44) => {",
+					"    var result = '';",
+					"    var characters = '0123456789';",
+					"    var charactersLength = characters.length;",
+					"    for (var i = 0; i < length; i++) {",
+					"        result += characters.charAt(Math.floor(Math.random() *",
+					"            charactersLength));",
+					"    }",
+					"    return result;",
+					"}"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

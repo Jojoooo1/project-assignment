@@ -1,0 +1,101 @@
+client:
+  slack:
+    api-alert:
+      webhook: ${SLACK_API_ALERT_WEBHOOK}
+      name: ${SLACK_API_ALERT_CHANNEL}
+
+redis:
+  host: ${REDIS_HOST}
+  port: ${REDIS_PORT:6379}
+  password: ${REDIS_PASSWORD}
+  timeoutInMs: 500
+  defaultTTL: 604800 # 7 days
+
+pyroscope:
+  enabled: false
+  # server: https://webhook.site/c926ec6d-4ba5-41ca-bceb-0d06643cafe4
+
+management:
+  server:
+    port: 8081 # always start management port on different port for security purpose.
+  info:
+    java:
+      enabled: true
+  endpoint:
+    health:
+      probes:
+        enabled: true
+        add-additional-paths: true
+      show-details: always
+      show-components: always
+  
+  endpoints:
+    web:
+      exposure:
+        include: info, health, metrics, sbom, preStopHook
+
+spring:
+  application:
+    name: api
+  main:
+    keep-alive: true # ensures JVM is kept alive, even if all threads are virtual threads https://docs.spring.io/spring-boot/docs/3.2.0-RC2/reference/htmlsingle/#features.spring-application.virtual-threads
+  web:
+    resources:
+      add-mappings: false # disable static content.
+  mvc:
+    log-resolved-exception: false # remove tomcat log exception since it is already logged in GlobalExceptionHandler.
+  reactor:
+    context-propagation: auto # automatically propagates trace and span in reactive pipelines.
+  threads:
+    virtual:
+      enabled: true
+  
+  data:
+    redis:
+      repositories:
+        enabled: false
+    web:
+      pageable:
+        max-page-size: 20 # default 2000. Prevent putting too much pressure on database.
+  
+  flyway:
+    locations: classpath:/db/migration/postgresql
+  
+  datasource:
+    hikari:
+      maximum-pool-size: ${DB_MAX_POOL_SIZE:20} # keep it as small as possible for better performance.
+      data-source-properties:
+        ApplicationName: ${spring.application.name} # show application's name when using pg_stat_activity
+        stringtype: unspecified
+        reWriteBatchedInserts: true
+    url: jdbc:postgresql://${DB_HOST}/${DB_NAME}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+  
+  jpa:
+    open-in-view: false # disables lazy loading in web views, very important for performance.
+    hibernate:
+      ddl-auto: validate # only validate database with ORM.
+    properties:
+      hibernate:
+        order_updates: true
+        order_inserts: true
+        jdbc:
+          # important: When using GenerationType.IDENTITY Hibernate disable batching, you need to use BatchSequenceGenerator
+          batch_size: ${JDBC_BATCH_SIZE:10}
+          time_zone: ${JDBC_TIMEZONE:America/Sao_Paulo}
+    
+    serialization:
+      write-dates-as-timestamps: false
+      fail-on-empty-beans: false
+  
+  lifecycle:
+    timeout-per-shutdown-phase: 20s
+
+# Necessary for graceful shutdown and coupled with lifecycle.
+server:
+  error:
+    whitelabel:
+      enabled: false # disable default whitelabel error page.
+  shutdown: graceful
+  

@@ -1,0 +1,29 @@
+name: "run tests"
+
+on:
+  pull_request:
+    types: [ opened, synchronize, reopened ]
+    branches: [ develop ]
+
+concurrency:
+  group: ci-dev-test-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  dev-test:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Setup
+      - uses: actions/checkout@v4
+      - name: Set up JDK
+        uses: actions/setup-java@v4.2.1
+        with:
+          distribution: 'liberica'
+          java-version: '21'
+          cache: 'maven'
+      
+      # 2. Run tests
+      - name: Run Unit & Integration Tests
+        run: mvn clean verify --no-transfer-progress
+      
+      # 3. Notify slack if fails

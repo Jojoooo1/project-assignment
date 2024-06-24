@@ -1,0 +1,168 @@
+name: "run tests & deploy to prod"
+
+on:
+  pull_request:
+    types: [ closed ]
+    branches: [ main ]
+
+env:
+  IMAGE_NAME: api
+
+concurrency:
+  group: ci-release-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  
+  prod-test:
+    runs-on: ubuntu-latest
+    if: (contains(toJSON(github.head_ref), 'release/') || contains(toJSON(github.head_ref), 'hotfix/')) && github.event.pull_request.merged == true
+    steps:
+      # 1. Setup
+      - uses: actions/checkout@v4
+      - name: Set up JDK
+        uses: actions/setup-java@v4.2.1
+        with:
+          distribution: 'liberica'
+          java-version: '21'
+          cache: 'maven'
+      
+      # 2. Test
+      - name: Run Unit & Integration Tests
+        run: mvn clean verify --no-transfer-progress
+  
+  prod-deploy:
+    needs: [ prod-test ]
+    runs-on: ubuntu-latest
+    environment: prod
+    permissions: # Necessary for workload identity provider
+      contents: 'read'
+      id-token: 'write'
+    
+    outputs:
+      RELEASE_VERSION: ${{ steps.variables.outputs.RELEASE_VERSION }}
+    steps:
+      # 1. Setup
+      - uses: actions/checkout@v4
+      - name: Set up JDK
+        uses: actions/setup-java@v4.2.1
+        with:
+          distribution: 'liberica'
+          java-version: '21'
+          cache: 'maven'
+      
+      # 2. Sets & print variables
+      - name: Sets variables
+        id: variables
+        run: |
+          git fetch --prune --prune-tags origin
+          
+          # 1. Get tags
+          LATEST_TAG=$(git describe --tags "$(git rev-list --tags --max-count=1)")
+          TAG_LIST=($(echo $LATEST_TAG | tr '.' ' '))
+          [[ "${#TAG_LIST[@]}" -ne 2 ]] && echo "$RELEASE_VERSION is not a valid version" && exit 1
+          
+          # 2. Set release version
+          if [[ "$GITHUB_HEAD_REF" == release* ]]
+          then
+           RELEASE_VERSION=$(( TAG_LIST[0] + 1 )).0;
+          else
+           RELEASE_VERSION=${TAG_LIST[0]}.$(( TAG_LIST[1] + 1));
+          fi
+          
+          # 3. Set vars
+          IMAGE_REGISTRY="us-docker.pkg.dev/${{ secrets.PROJECT_ID }}/cloud-diplomats/${{ env.IMAGE_NAME }}"
+          IMAGE_TAG=${RELEASE_VERSION}-$(git rev-parse --short=4 HEAD)
+          
+          # 4. Set vars as envs & ouputs
+          echo "IMAGE_REGISTRY=$IMAGE_REGISTRY" >> $GITHUB_ENV
+          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+          echo "RELEASE_VERSION=$RELEASE_VERSION" >> $GITHUB_ENV
+          
+          echo "RELEASE_VERSION=${RELEASE_VERSION}" >> $GITHUB_OUTPUT
+      
+      - name: Print variables
+        run: |
+          echo "IMAGE_TAG=$IMAGE_TAG"
+          echo "IMAGE_REGISTRY=$IMAGE_REGISTRY"
+      
+      #      # 3. Auth
+      #      - name: Auth via Workload Identity Federation
+      #        id: auth
+      #        uses: google-github-actions/auth@v2.1.3
+      #        with:
+      #          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+      #          service_account: ${{ secrets.SERVICE_ACCOUNT }} # impersonated SA
+      #
+      #      # 4. Setup gcloud & configure docker to use gcloud
+      #      - name: Set up gcloud
+      #        uses: google-github-actions/setup-gcloud@v2.1.0
+      #        with:
+      #          project_id: ${{ secrets.PROJECT_ID }}
+      #      - name: Setup docker to authenticate via gcloud
+      #        run: gcloud --quiet auth configure-docker us-docker.pkg.dev
+      #
+      #      # 5. Build image
+      #      - name: Build image
+      #        run: mvn clean package -DskipTests spring-boot:build-image --no-transfer-progress -Dspring-boot.build-image.imageName=$IMAGE_REGISTRY:$IMAGE_TAG
+      #
+      #      # 6. Push image
+      #      - name: Push image
+      #        run: docker push $IMAGE_REGISTRY:$IMAGE_TAG
+      
+      # 7. Notify if fails
+  
+  prod-create-release:
+    needs: [ prod-deploy ]
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Setup
+      - uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: ${{ secrets.CI_APP_ID }}
+          private-key: ${{ secrets.CI_APP_PRIVATE_KEY }}
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+      
+      # 2. Create release
+      - name: Create release
+        env:
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          RELEASE_VERSION=${{ needs.prod-deploy.outputs.RELEASE_VERSION }}
+          git tag -a $RELEASE_VERSION -m "release: $RELEASE_VERSION"
+          git push origin $RELEASE_VERSION
+          gh release create $RELEASE_VERSION --title "$RELEASE_VERSION" --generate-notes
+  
+  prod-create-pull-request:
+    needs: [ prod-deploy ]
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Setup
+      - uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: ${{ secrets.CI_APP_ID }}
+          private-key: ${{ secrets.CI_APP_PRIVATE_KEY }}
+      - uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+          token: ${{ steps.app-token.outputs.token }}
+      
+      # 2. Create PR
+      - name: Open PR to align develop with main
+        env:
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          RELEASE_VERSION=${{ needs.prod-deploy.outputs.RELEASE_VERSION }}
+          BRANCH_NAME="merge/$RELEASE_VERSION"
+          git checkout -b $BRANCH_NAME
+          
+          git merge origin/main
+          git commit --allow-empty -am "Merge main into develop"
+          git push origin "$BRANCH_NAME"
+          
+          gh pr create --base develop --head "$BRANCH_NAME" --title "Merge - $RELEASE_VERSION" --fill

@@ -1,0 +1,37 @@
+changelog:
+  exclude:
+    labels:
+      - ignore-changelog
+
+  categories:
+    - title: ':warning: Update considerations and deprecations'
+      labels:
+        - 'warn/api-change'
+        - 'warn/behavior-change'
+        - 'warn/blocker'
+        - 'warn/deprecation'
+        - 'warn/regression'
+
+    - title: ':rocket: New features and improvements'
+      labels:
+        - 'feature'
+        - 'enhancement'
+    - title: ':lady_beetle: Bug fixes'
+      labels:
+        - 'fix'
+        - 'bugfix'
+        - 'bug'
+    - title: ':hammer: Build/Test Dependency Upgrades'
+      labels:
+        - 'dependencies'
+        - 'maintenance'
+
+    - title: ':book: Documentation, Tests and Build'
+      labels:
+        - 'documentation'
+        - 'test'
+        - 'chore'
+
+    - title: ':question: Other Changes'
+      labels:
+        - '*'

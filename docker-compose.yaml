@@ -1,0 +1,72 @@
+services:
+  # After using this maven container you need to re-install maven using "mvn install -DskipTests"
+  api:
+    container_name: api
+    image: maven:3.9.6-eclipse-temurin-21
+    user: '1000'
+    command:
+      [
+        'mvn',
+        'clean',
+        'spring-boot:run',
+        '-Duser.home=/var/maven',
+        "-Dspring-boot.run.jvmArguments=-javaagent:/usr/src/workdir/opentelemetry/opentelemetry-javaagent.jar -Dotel.javaagent.configuration-file=/usr/src/workdir/opentelemetry/dev.properties"
+      ]
+    network_mode: host
+    depends_on:
+      database:
+        condition: service_healthy
+    environment:
+      MAVEN_CONFIG: /var/maven/.m2 # re-use local cache
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://localhost:5432/api?stringtype=unspecified&reWriteBatchedInserts=true"
+    volumes:
+      - "$PWD:/usr/src/workdir"
+      - ~/.m2:/var/maven/.m2
+    working_dir: /usr/src/workdir
+    healthcheck:
+      test:
+        [
+          'CMD-SHELL',
+          'curl --fail --silent localhost:8081/actuator/health | grep UP || exit 1'
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+  
+  database:
+    container_name: database
+    image: bitnami/postgresql:16.3.0
+    network_mode: host
+    environment:
+      POSTGRESQL_DATABASE: api
+      POSTGRESQL_USERNAME: user
+      POSTGRESQL_PASSWORD: password
+    volumes:
+      - api_database:/bitnami/postgresql
+    healthcheck:
+      test: [ 'CMD-SHELL', 'pg_isready -U postgres' ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  
+  cache:
+    container_name: cache
+    image: bitnami/valkey:7.2
+    network_mode: host
+    environment:
+      - VALKEY_PASSWORD=password
+    volumes:
+      - api_cache:/bitnami/valkey/data
+    healthcheck:
+      test: [ "CMD-SHELL", "valkey-cli -a password PING  | grep PONG" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  api_database:
+    name: api_database
+  api_cache:
+    name: api_cache

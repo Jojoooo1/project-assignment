@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+  <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+  
+  <appender name="JSON" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+      <providers>
+        <timestamp>
+          <timeZone>America/Sao_Paulo</timeZone>
+        </timestamp>
+        <pattern>
+          <pattern>
+            {
+            "level": "%level",
+            "company": "%mdc{company}",
+            "user": "%mdc{user}",
+            "message": "%message",
+            "traceId": "%mdc{trace_id}",
+            "spanId": "%mdc{span_id}",
+            "traceFlags": "%mdc{trace_flags}",
+            "logger": "%logger",
+            "thread": "%thread"
+            }
+          </pattern>
+        </pattern>
+        <stackTrace>
+          <fieldName>stackTrace</fieldName>
+          <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
+            <maxDepthPerThrowable>4</maxDepthPerThrowable>
+            <shortenedClassNameLength>30</shortenedClassNameLength>
+            <rootCauseFirst>true</rootCauseFirst>
+          </throwableConverter>
+        </stackTrace>
+      </providers>
+    </encoder>
+    
+  </appender>
+  
+  <springProfile name="!json-logs">
+    <root level="INFO">
+      <appender-ref ref="CONSOLE"/>
+    </root>
+  </springProfile>
+  
+  <springProfile name="json-logs">
+    <root level="INFO">
+      <appender-ref ref="JSON"/>
+    </root>
+  </springProfile>
+
+</configuration>

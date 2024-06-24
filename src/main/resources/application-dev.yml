@@ -1,0 +1,21 @@
+client:
+  slack:
+    api-alert:
+      webhook: https://hooks.slack.com/services/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
+      name: api-alert
+
+redis:
+  host: localhost
+  password: password
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/api?reWriteBatchedInserts=true
+    username: user
+    password: password
+  devtools:
+    restart:
+      enabled: false
+
+logging:
+  pattern.correlation: "[${spring.application.name:},%X{trace_id:-},%X{span_id:-},%X{trace_flags:-}]"
