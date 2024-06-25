@@ -1,3 +1,6 @@
+#### context:
+After not succeeding in my interview home assignment project, I believe this project could benefit other engineers on their journeys. That's why I've decided to share it. I've removed all company-specific code to ensure it remains completely agnostic. I hope you enjoy it and find it educational.
+
 # Project assignment
 
 ## Introduction
