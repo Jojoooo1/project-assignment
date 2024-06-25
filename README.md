@@ -4,7 +4,7 @@
 
 Welcome to the API Documentation for the project assignment xxxx. This API was designed with a
 strong emphasis on security and performance, strictly following industry best practices. It consists
-of four distinct APIs, each serving a specific purpose
+of four distinct APIs, each serving a specific purpose.
 
 - **Customer**: Facilitates customer integration with the platform.
 - **Management**: API reserved for the development team to manage the platform. It is isolated from
@@ -203,7 +203,7 @@ The database consists of 3 tables (including 1 for migration):
 - Always use `identity` for the primary key (instead of `bigserial`) for tables that do not require batching.
 - Normalize all identities to use `bigint`.
 - Use [UUIDv7](https://uuid7.com/) for tables that require batching to enhance performance. They are
-  generated client-side because PostgreSQL does not currently implement it as of version 17 (planned for v18). 
+  generated client-side because PostgreSQL does not implement it as of version 17 (planned for v18). 
   UUIDv7 is optimized for indexing and querying (as opposed to UUIDv4), as explained [here](https://www.cybertec-postgresql.com/en/unexpected-downsides-of-uuid-keys-in-postgresql/).
 - If you must use identity, opt for a traditional sequence generator. However, be aware that this will limit your batching configuration flexibility.
 - Normalize `varchar` lengths to 255.
@@ -217,7 +217,7 @@ The database consists of 3 tables (including 1 for migration):
 #### Business choices
 
 - This is specific to your home assignment project, add some context or remove it. 
-  I personally put all the business/product choice I have made.
+  I personally put all the business/product choices I have made.
 
 ### Indexes
 
@@ -401,7 +401,7 @@ public interface BaseManagementMapper<E, C, U, P, R> {
 
 The application implements an API key-based authentication. It uses Role-Based Access Control (RBAC)
 based on company attributes such as 'is_customer', 'is_management', and 'is_internal'. I personally
-prefer to repeat this information per table (instead of using satellite table) using boolean
+prefer to repeat this information per table (instead of using a satellite table) using boolean
 column for better data manipulation and security.
 
 Authorization is verified at the API entry, but the architecture allows RBAC verification at any
@@ -623,7 +623,7 @@ server.
 - GET requests are logged at the debug level.
 - CREATE, UPDATE, and DELETE requests are logged at the info level.
 - It logs asynchronously every entity that is created, updated, deleted, or rolled back through
-  a `@TransactionalEventListener` to ensure strict traceability of every entity changes.
+  a `@TransactionalEventListener` to ensure strict traceability of every entity change.
 - As explained previously the company and user information are incorporated into the log context
   for better traceability.
 - As explained previously a dedicated profile `json-logs` is available for logging in JSON format,
@@ -674,7 +674,7 @@ Example:
 
 To export the traces, set the property `otel.traces.exporter=otlp` in `opentelemetry/dev.properties`
 or set the environment variable `OTEL_TRACES_EXPORTER=otlp` and specify the
-corresponding OTLP endpoint in `otel.exporter.otlp.endpoint`. For debugging purpose you can use the
+corresponding OTLP endpoint in `otel.exporter.otlp.endpoint`. For debugging, you can use the
 [OpenTelemetry Desktop Viewer](https://github.com/CtrlSpice/otel-desktop-viewer).
 
 ### Profiling
@@ -758,7 +758,7 @@ With more time I would have created many more tests to improve test coverage.
 
 ### Git Workflow
 
-I opted for a conservative approach using Gitflow due to limited context. Depending on the
+I opted for a conservative approach using Gitflow due to the limited context. Depending on the
 product development context, I would recommend using a trunk-based
 workflow for more streamlined development.
 
@@ -778,7 +778,7 @@ potential bugs.
 - Merge and close the PR:
     - The CI will automatically:
         - Run all tests.
-        - Deploy image to dev image registry using workload identity federation.
+        - Deploy the image to dev image registry using workload identity federation.
 
 Repeat steps 1, 2, and 3 as necessary during feature development iterations.
 
@@ -792,14 +792,14 @@ Repeat steps 1, 2, and 3 as necessary during feature development iterations.
       to `main`.
     - The CI will automatically:
         - Run all tests.
-        - Deploy image to test image registry using workload identity federation.
+        - Deploy the image to test image registry using workload identity federation.
 
 **Production environment**
 
 - Merge and close the PR `release/x.x` into `main`.
     - The CI will automatically:
         - Run all tests.
-        - Deploy image to prod image registry using workload identity federation.
+        - Deploy the image to prod image registry using workload identity federation.
         - Create release.
         - Open PR to align `develop` with `main` in case modifications were made in the PR.
 
@@ -815,14 +815,14 @@ Repeat steps 1, 2, and 3 as necessary during feature development iterations.
       to `main`.
     - The CI will automatically:
         - Run all tests.
-        - Deploy image to test image registry.
+        - Deploy the image to test image registry.
 
 **Production environment**
 
 - Merge and close the PR `release/x.x` into `main`.
     - The CI will automatically:
         - Run all tests.
-        - Deploy image to prod image registry using workload identity federation.
+        - Deploy the image to prod image registry using workload identity federation.
         - Create release.
         - Open PR to align `develop` with `main` since `develop` do not have the hotfix
           modification.
@@ -850,14 +850,14 @@ This workflow involves managing five types of branches:
 
 #### Strategy
 
-I personally prefer to limit the CI pipeline to tests and push image to registry. This
+I personally prefer to limit the CI pipeline to tests and push the image to registry. This
 workflow expects an external continuous deployment agent such
 as [ArgoCD](https://argoproj.github.io/cd/) paired
 with [ArgoCD Image Updater](https://argoproj.github.io/cd/) (or [Kargo](https://github.com/akuity/kargo)) to automatically deploy the new image.
 
 This approach ensures that the CI pipeline focuses solely on:
 
-- Running tests of any kind, static code analyse, security measures [...].
+- Running tests of any kind, static code analysis, security measures [...].
 - Creating and pushing the Docker image to a registry.
 
 #### Deployment
@@ -867,7 +867,7 @@ can consider:
 
 **Blue-Green Deployment**: This approach ensures zero downtime by running two identical
 production environments ("blue" and "green"). Traffic is routed to one environment while the
-other is updated. Use a `preStop` hook in your kubernetes deployment like `command: ['sleep', '60']` for the kubelet 
+other is updated. Use a `preStop` hook in your Kubernetes deployment like `command: ['sleep', '60']` for the kubelet 
 to wait for a specified delay before sending the `SIGTERM` signal, ensuring graceful shutdown.
 
 **Canary Deployment**: This strategy involves rolling out the new version to a subset of users or
@@ -882,14 +882,14 @@ codebase.
 ### Areas for Improvement
 
 - **Performance Testing**:  Create an additional workflow to integrate [k6s](https://k6.io/) for
-  critical APIs to ensure no performance regression are made.
+  critical APIs to ensure no performance regressions are made.
 - **Code quality and security**:
   Use [SonarQube](https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.sonarsource.com/products/sonarqube/&ved=2ahUKEwjRloDCyeWGAxVWq5UCHd3qCCsQFnoECAYQAQ&usg=AOvVaw2XrcT14PuYVcMxUcEkqccE)
   to enhance code quality and security.
 - **Automated release candidate testing**: Create an additional workflow to automatically test
   release candidates in your test environment. Trigger a webhook after a successful
   application deployment (using argo-notification for example), which will initiate a GitHub Action
-  workflow to execute an end-to-end (e2e) tests.
+  workflow to execute end-to-end (e2e) tests.
 
 ## GitHub Actions configuration
 
@@ -926,7 +926,7 @@ enhance security and prevent the use of personal access tokens.
 ### Monitoring
 
 - Use an OpenTelemetry [Collector](https://opentelemetry.io/docs/collector/) to consolidate all
-  your metrics and traces. It will help you stay vendor agnostics.
+  your metrics and traces. It will help you stay vendor agnostic.
 - Use a Grafana dashboard like the one shown below to monitor your application:
 
 ![grafana](./documentation/grafana.png)
@@ -951,7 +951,7 @@ enhance security and prevent the use of personal access tokens.
 
 - The application integrates a Slack client that alerts on all internal errors, providing error
   messages with links to search your tracing and logging systems with the corresponding `trace_id`.
-  This two links significantly reduces debugging time.
+  These two links significantly reduce debugging time.
 
 ![gitflow](./documentation/alert-slack.png)
 
@@ -1068,14 +1068,14 @@ Ensure high availability with:
 - **Anti-Affinity**: Create an anti-affinity rule to distribute replicas across different nodes
   or zones, improving fault tolerance.
 - **PodDisruptionBudget**: Create a `PodDisruptionBudget` with at least 2 replicas to prevent
-  issue or failure during kubernetes operations.
+  issues or failures during Kubernetes operations.
 - **Database**: Implement a fallback strategy in another region to mitigate risks and
   ensure continuous availability in case of regional failures.
 - **Cache**: Same as database to ensure availability during regional issues or failures.
 
 ### Database
 
-- Use [pgTune](https://pgtune.leopard.in.ua/) for initial PostgreSQL configuration.
+- Use [pgTune](https://pgtune.leopard.in.ua/) for the initial PostgreSQL configuration.
 - Set autovacuum thresholds to 5000/10000 for highly updatable tables to optimize vacuum operation
   and table performance. For example:
   ```sql
@@ -1095,13 +1095,13 @@ Ensure high availability with:
   performance.
 - Always prefer partial indexes.
 - Avoid using `order by` on none indexed column
-- Avoid sharding or partitioning unless absolutely necessary. It can introduce
+- Avoid sharding or partitioning unless necessary. It can introduce
   significant complexity and overhead if not implemented carefully.
 - Create a read replica for offloading analytical queries or business intelligence workloads, as
   this can help maintain performance for the primary database. If the read replica becomes a
   bottleneck, consider replicating data to an OLAP database
   like [ClickHouse](https://clickhouse.com/) using CDC.
-- Monitor replication status to avoid WAL logs to accumulate leading to **unlimited** disk grow.
+- Monitor replication status to avoid WAL logs accumulating leading to **unlimited** disk growth.
 
 ### Security
 
@@ -1112,9 +1112,9 @@ To enhance security, consider implementing the following measures:
 - **IP Whitelisting**: Restrict access by whitelisting client IP addresses.
 - **Rate Limiting**: Implement rate limiting to protect against excessive API requests.
 - **Web Application Firewall (WAF)**: Use a WAF to filter and monitor HTTP traffic.
-- **Namespace Traffic Restriction**: Enhance isolation by restricting traffic within same kubernetes
+- **Namespace Traffic Restriction**: Enhance isolation by restricting traffic within the same Kubernetes
   namespaces.
-- **Image User Privileges**: Always run image as non-root user `1000` to prevent privilege
+- **Image User Privileges**: Always run the image as non-root user `1000` to prevent privilege
   escalation.
 - **Cloud SQL Proxy**: Use Cloud SQL Proxy to ensure secure connections to your Cloud SQL instances.
 - **API Exposure**: Only expose APIs through a load balancer to control and monitor incoming traffic
@@ -1126,8 +1126,8 @@ To enhance security, consider implementing the following measures:
   identity for secure access control.
 - **Supply Chain Security**: The API implements an SBOM endpoint at `/actuator/sbom/application` to
   analyze supply chain vulnerabilities.
-- **Code Quality** Use a tools for code quality and static analysis like SonarQube
-- **Deployment**: Use secure kubernetes deployment as follows:
+- **Code Quality** Use tools for code quality and static analysis like SonarQube
+- **Deployment**: Use secure Kubernetes deployment as follows:
 
 ```yaml
     spec:
@@ -1192,7 +1192,7 @@ To enhance security, consider implementing the following measures:
 ## Formatting
 
 It uses [Git Code Format Maven Plugin](https://github.com/Cosium/git-code-format-maven-plugin)
-to unify java formatting. On commit, the hook will automatically format staged files.
+to unify Java formatting. On commit, the hook will automatically format staged files.
 
 ## Postman Collection
 
