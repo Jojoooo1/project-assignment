@@ -1,4 +1,4 @@
-package com.project.api.controllers.pubic;
+package com.project.api.controllers.publ;
 
 import com.project.api.constants.AppUrls;
 import lombok.RequiredArgsConstructor;

@@ -109,7 +109,7 @@ and security:
 │   │   │               │   ├── internal
 │   │   │               │   ├── management
 │   │   │               │   │   └── base
-│   │   │               │   └── pubic
+│   │   │               │   └── publ
 │   │   │               ├── entities
 │   │   │               │   └── base
 │   │   │               ├── exceptions
