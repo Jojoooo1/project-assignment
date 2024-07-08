@@ -29,7 +29,7 @@
     <logstash.version>7.4</logstash.version>
     
     <!-- Observability -->
-    <opentelemetry-api.version>1.39.0</opentelemetry-api.version>
+    <opentelemetry-api.version>1.40.0</opentelemetry-api.version>
     <pyroscope-agent.version>0.14.0</pyroscope-agent.version>
     
     <!-- Data & Serialization -->
