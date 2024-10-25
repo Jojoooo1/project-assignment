@@ -63,6 +63,7 @@ spring:
   
   datasource:
     hikari:
+      auto-commit: false # delay db connection until it is needed (first query is made) else use transactionTemplate to have complete control over tx flow.
       maximum-pool-size: ${DB_MAX_POOL_SIZE:20} # keep it as small as possible for better performance.
       data-source-properties:
         ApplicationName: ${spring.application.name} # show application's name when using pg_stat_activity
