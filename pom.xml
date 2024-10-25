@@ -21,7 +21,7 @@
     <java.version>21</java.version>
     
     <!-- Database -->
-    <postgresql.version>42.7.3</postgresql.version>
+    <postgresql.version>42.7.4</postgresql.version>
     <flyway-database-postgresql.version>10.14.0</flyway-database-postgresql.version>
     <querydsl.version>5.1.0</querydsl.version>
     
@@ -29,19 +29,19 @@
     <logstash.version>8.0</logstash.version>
     
     <!-- Observability -->
-    <opentelemetry-api.version>1.40.0</opentelemetry-api.version>
+    <opentelemetry-api.version>1.41.0</opentelemetry-api.version>
     <pyroscope-agent.version>0.14.0</pyroscope-agent.version>
     
     <!-- Data & Serialization -->
     <projectlombok.version>1.18.34</projectlombok.version>
-    <mapstruct.version>1.5.5.Final</mapstruct.version>
+    <mapstruct.version>1.6.2</mapstruct.version>
     <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
     
     <!-- utilities -->
     <apache-commons-text.version>1.12.0</apache-commons-text.version>
     <apache-commons-collections.version>4.4</apache-commons-collections.version>
     <java-uuid-generator.version>5.1.0</java-uuid-generator.version>
-    <slack-api-client.version>1.40.3</slack-api-client.version>
+    <slack-api-client.version>1.43.0</slack-api-client.version>
     
     <!-- Supply chain security -->
     <cyclonedx.version>2.8.1</cyclonedx.version>
@@ -50,7 +50,7 @@
     <git-code-format-maven-plugin.version>5.3</git-code-format-maven-plugin.version>
     
     <!-- Test -->
-    <maven-surefire.version>3.3.1</maven-surefire.version>
+    <maven-surefire.version>3.5.0</maven-surefire.version>
     <testcontainers.version>1.20.1</testcontainers.version>
     <testcontainer-redis.version>1.6.4</testcontainer-redis.version>
   </properties>
