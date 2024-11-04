@@ -50,7 +50,7 @@
     <git-code-format-maven-plugin.version>5.3</git-code-format-maven-plugin.version>
     
     <!-- Test -->
-    <maven-surefire.version>3.5.0</maven-surefire.version>
+    <maven-surefire.version>3.5.2</maven-surefire.version>
     <testcontainers.version>1.20.2</testcontainers.version>
     <testcontainer-redis.version>1.6.4</testcontainer-redis.version>
   </properties>
