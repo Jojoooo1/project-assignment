@@ -33,7 +33,7 @@
     <pyroscope-agent.version>0.14.0</pyroscope-agent.version>
     
     <!-- Data & Serialization -->
-    <projectlombok.version>1.18.34</projectlombok.version>
+    <projectlombok.version>1.18.36</projectlombok.version>
     <mapstruct.version>1.6.2</mapstruct.version>
     <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
     
