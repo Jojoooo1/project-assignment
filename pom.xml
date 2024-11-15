@@ -34,7 +34,7 @@
     
     <!-- Data & Serialization -->
     <projectlombok.version>1.18.36</projectlombok.version>
-    <mapstruct.version>1.6.2</mapstruct.version>
+    <mapstruct.version>1.6.3</mapstruct.version>
     <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
     
     <!-- utilities -->
