@@ -30,7 +30,7 @@
     
     <!-- Observability -->
     <opentelemetry-api.version>1.41.0</opentelemetry-api.version>
-    <pyroscope-agent.version>0.14.0</pyroscope-agent.version>
+    <pyroscope-agent.version>0.15.0</pyroscope-agent.version>
     
     <!-- Data & Serialization -->
     <projectlombok.version>1.18.36</projectlombok.version>
