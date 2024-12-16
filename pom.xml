@@ -38,7 +38,7 @@
     <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
     
     <!-- utilities -->
-    <apache-commons-text.version>1.12.0</apache-commons-text.version>
+    <apache-commons-text.version>1.13.0</apache-commons-text.version>
     <apache-commons-collections.version>4.4</apache-commons-collections.version>
     <java-uuid-generator.version>5.1.0</java-uuid-generator.version>
     <slack-api-client.version>1.44.2</slack-api-client.version>
