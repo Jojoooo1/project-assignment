@@ -245,8 +245,8 @@ and update operations.
 
 ### Migration
 
-- Use Liquibase for automatic schema migration.
-- It is **really** important to create and drop indexes of large tables outside of Liquibase
+- Use Flyway for automatic schema migration.
+- It is **really** important to create and drop indexes of large tables outside of Flyway
   using `CREATE INDEX CONCURRENTLY` and `DROP INDEX CONCURRENTLY` statements to prevent any locking
   and database downtime.
 
